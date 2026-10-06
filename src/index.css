@@ -1340,7 +1340,8 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 52px 24px calc(28px + var(--safe-bottom));
+  padding: 52px 24px calc(40px + var(--safe-bottom));
+  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -1431,12 +1432,12 @@ img {
 
 .login-admin-hint {
   text-align: center;
-  margin-top: 6px;
-  margin-bottom: 4px;
-  font-size: 0.7rem;
-  line-height: 1.35;
+  margin-top: 4px;
+  margin-bottom: 10px;
+  padding-bottom: 2px;
+  font-size: 0.68rem;
+  line-height: 1.4;
   white-space: nowrap;
-  overflow: visible;
 }
 
 /* Expanded player */
