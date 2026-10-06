@@ -20,6 +20,7 @@ import {
   TimelineEditorModal,
   type TimelineFormData,
 } from '../components/TimelineEditorModal';
+import { DevotionalPanel } from '../components/DevotionalPanel';
 
 function timelinePhotoClass(mark: TimelineMark): string {
   const t = mark.title.toLowerCase();
@@ -47,7 +48,7 @@ function timelinePhotoClass(mark: TimelineMark): string {
 
 export function AltarScreen() {
   const { isAdmin, adminEmail } = useApp();
-  const [tab, setTab] = useState<'oracao' | 'missoes' | 'trajetoria'>('oracao');
+  const [tab, setTab] = useState<'oracao' | 'missoes' | 'trajetoria' | 'devocional'>('oracao');
   const [prayers, setPrayers] = useState(seedPrayers);
   const [text, setText] = useState('');
   const [prayed, setPrayed] = useState<Record<string, boolean>>({});
@@ -191,6 +192,12 @@ export function AltarScreen() {
           onClick={() => setTab('trajetoria')}
         >
           Trajetória
+        </button>
+        <button
+          className={`tab${tab === 'devocional' ? ' active' : ''}`}
+          onClick={() => setTab('devocional')}
+        >
+          Devocional
         </button>
       </div>
 
@@ -341,6 +348,8 @@ export function AltarScreen() {
           </div>
         </section>
       )}
+
+      {tab === 'devocional' && <DevotionalPanel />}
 
       {tab === 'trajetoria' && (
         <>

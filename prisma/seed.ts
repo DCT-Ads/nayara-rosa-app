@@ -193,6 +193,29 @@ async function main() {
   } else {
     console.log(`Seed mídia ignorado: já existem ${mediaCount} itens.`);
   }
+
+  const ambientDefaults = [
+    {
+      id: 'prayer',
+      title: 'Momento de Oração',
+      artist: 'Nayara Rosa',
+      mediaUrl: '',
+    },
+    {
+      id: 'devotion',
+      title: 'Momento Devocional',
+      artist: 'Nayara Rosa',
+      mediaUrl: '',
+    },
+  ];
+  for (const row of ambientDefaults) {
+    await prisma.ambientTrack.upsert({
+      where: { id: row.id },
+      create: row,
+      update: {},
+    });
+  }
+  console.log('Seed ambient: fundos do Devocional garantidos.');
 }
 
 main()

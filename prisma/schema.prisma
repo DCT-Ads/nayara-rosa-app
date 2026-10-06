@@ -48,3 +48,12 @@ model MediaItem {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+/** Fundos musicais fixos do Devocional (oração / devocional) */
+model AmbientTrack {
+  id        String   @id // prayer | devotion
+  title     String
+  artist    String   @default("Nayara Rosa")
+  mediaUrl  String   @default("")
+  updatedAt DateTime @updatedAt
+}

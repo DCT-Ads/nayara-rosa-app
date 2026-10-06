@@ -74,7 +74,13 @@ export function AppShell({ children }: { children: ReactNode }) {
       {!isApp && (
         <aside className="site-panel anim-fade-up">
           <div className="site-brand">
-            <img src="/icons/icon.svg" alt="" width={48} height={48} />
+            <img
+              src="/icons/logo-nr.png"
+              alt="Nayara Rosa"
+              width={56}
+              height={56}
+              style={{ borderRadius: 14, objectFit: 'cover' }}
+            />
             <div>
               <p className="caption gold-soft">Oficial</p>
               <h1 className="h2">Nayara Rosa</h1>

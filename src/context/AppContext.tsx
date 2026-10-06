@@ -33,6 +33,7 @@ type AppContextValue = {
   setShowMiniPlayer: (v: boolean) => void;
   refreshLibrary: () => Promise<void>;
   attachVideoEl: (el: HTMLVideoElement | null) => void;
+  pauseMainPlayback: () => void;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -162,6 +163,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setPlaying((p) => !p);
   }, [currentTrack]);
 
+  const pauseMainPlayback = useCallback(() => {
+    setPlaying(false);
+  }, []);
+
   const playTrack = useCallback((track: Track) => {
     setTrack(track);
     setPlaying(hasMedia(track));
@@ -217,6 +222,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       setShowMiniPlayer,
       refreshLibrary,
       attachVideoEl,
+      pauseMainPlayback,
     }),
     [
       isAuthenticated,
@@ -238,6 +244,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       markAllRead,
       refreshLibrary,
       attachVideoEl,
+      pauseMainPlayback,
     ],
   );
 

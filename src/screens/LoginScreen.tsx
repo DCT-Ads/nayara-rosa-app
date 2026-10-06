@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Music2, Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { images } from '../data/content';
 import { StatusBar } from '../components/StatusBar';
@@ -36,8 +36,8 @@ export function LoginScreen() {
       <StatusBar />
       <div className="login-body">
         <div className="login-brand">
-          <div className="logo-mark">
-            <Music2 size={28} color="#fff" strokeWidth={2.5} />
+          <div className="logo-mark logo-mark--photo">
+            <img src="/icons/logo-nr.png" alt="Nayara Rosa" width={72} height={72} />
           </div>
           <h1 className="h1">Nayara Rosa</h1>
           <p className="caption" style={{ marginTop: 6 }}>

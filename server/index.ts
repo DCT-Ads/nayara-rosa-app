@@ -581,6 +581,92 @@ app.delete('/api/media/:id', requireAdmin, async (req, res) => {
   }
 });
 
+const AMBIENT_IDS = new Set(['prayer', 'devotion']);
+
+function mapAmbient(a: { id: string; title: string; artist: string; mediaUrl: string }) {
+  return {
+    id: a.id as 'prayer' | 'devotion',
+    title: a.title,
+    artist: a.artist,
+    mediaUrl: a.mediaUrl,
+    label: a.id === 'prayer' ? 'Fundo Musical para Oração' : 'Fundo Musical para Devocional',
+  };
+}
+
+async function ensureAmbientRows() {
+  await prisma.ambientTrack.upsert({
+    where: { id: 'prayer' },
+    create: { id: 'prayer', title: 'Momento de Oração', artist: 'Nayara Rosa' },
+    update: {},
+  });
+  await prisma.ambientTrack.upsert({
+    where: { id: 'devotion' },
+    create: { id: 'devotion', title: 'Momento Devocional', artist: 'Nayara Rosa' },
+    update: {},
+  });
+}
+
+app.get('/api/ambient', async (_req, res) => {
+  try {
+    await ensureAmbientRows();
+    const rows = await prisma.ambientTrack.findMany({
+      orderBy: { id: 'asc' },
+    });
+    res.json(rows.map(mapAmbient));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Falha ao listar fundos musicais' });
+  }
+});
+
+app.put('/api/ambient/:id', requireAdmin, async (req, res) => {
+  try {
+    const id = paramId(req);
+    if (!AMBIENT_IDS.has(id)) return res.status(404).json({ error: 'Fundo inválido' });
+    await ensureAmbientRows();
+    const { title, artist } = req.body;
+    const item = await prisma.ambientTrack.update({
+      where: { id },
+      data: {
+        ...(title !== undefined && { title: String(title).trim() || 'Instrumental' }),
+        ...(artist !== undefined && { artist: String(artist).trim() || 'Nayara Rosa' }),
+      },
+    });
+    return res.json(mapAmbient(item));
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Falha ao atualizar fundo musical' });
+  }
+});
+
+app.post(
+  '/api/ambient/:id/file',
+  requireAdmin,
+  uploadMedia.single('file'),
+  async (req, res) => {
+    try {
+      const id = paramId(req);
+      if (!AMBIENT_IDS.has(id)) return res.status(404).json({ error: 'Fundo inválido' });
+      await ensureAmbientRows();
+      if (!req.file) return res.status(400).json({ error: 'Arquivo não enviado' });
+      if (!req.file.mimetype.startsWith('audio/')) {
+        return res.status(400).json({ error: 'Envie um arquivo de áudio' });
+      }
+      const existing = await prisma.ambientTrack.findUnique({ where: { id } });
+      if (existing?.mediaUrl) unlinkUpload(existing.mediaUrl);
+      const mediaUrl = `/uploads/media/${req.file.filename}`;
+      const item = await prisma.ambientTrack.update({
+        where: { id },
+        data: { mediaUrl },
+      });
+      return res.json(mapAmbient(item));
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Falha ao enviar áudio' });
+    }
+  },
+);
+
 /* Produção: site + API no mesmo servidor */
 const distDir = path.join(rootDir, 'dist');
 if (fs.existsSync(distDir)) {
