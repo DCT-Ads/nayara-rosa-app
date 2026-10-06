@@ -1,0 +1,17 @@
+node_modules
+dist
+dev-dist
+.git
+.cursor
+*.mp4
+*.mp3
+*.webm
+*.mov
+public/uploads/media/*.mp4
+public/uploads/media/*.mp3
+.env
+.env.*
+prisma/dev.db
+prisma/dev.db-journal
+upload-result.json
+*.log
