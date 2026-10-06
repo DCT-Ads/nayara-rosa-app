@@ -2,11 +2,16 @@
   "framework": null,
   "buildCommand": "prisma generate && npm run build",
   "installCommand": "npm install",
-  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" },
+    { "source": "/uploads/(.*)", "destination": "/api" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
   "functions": {
     "api/index.ts": {
       "maxDuration": 60,
-      "includeFiles": "{dist/**,public/**,prisma/**,node_modules/.prisma/**,node_modules/@prisma/client/**}"
+      "includeFiles": "{prisma/**,node_modules/.prisma/**,node_modules/@prisma/client/**}"
     }
   }
 }

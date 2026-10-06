@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Download, MonitorSmartphone, Smartphone } from 'lucide-react';
+import { LogoMark } from './StatusBar';
 
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -38,15 +39,18 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { standalone, isApp } = useAppMode();
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [installedHint, setInstalledHint] = useState(false);
+  const [showInstallHelp, setShowInstallHelp] = useState(false);
 
   useEffect(() => {
     const onBip = (e: Event) => {
       e.preventDefault();
       setInstallEvent(e as BeforeInstallPromptEvent);
+      setShowInstallHelp(false);
     };
     const onInstalled = () => {
       setInstallEvent(null);
       setInstalledHint(true);
+      setShowInstallHelp(false);
     };
     window.addEventListener('beforeinstallprompt', onBip);
     window.addEventListener('appinstalled', onInstalled);
@@ -63,10 +67,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   }, [standalone, isApp]);
 
   async function handleInstall() {
-    if (!installEvent) return;
-    await installEvent.prompt();
-    const choice = await installEvent.userChoice;
-    if (choice.outcome === 'accepted') setInstallEvent(null);
+    if (installEvent) {
+      await installEvent.prompt();
+      const choice = await installEvent.userChoice;
+      if (choice.outcome === 'accepted') setInstallEvent(null);
+      return;
+    }
+    setShowInstallHelp(true);
   }
 
   return (
@@ -74,15 +81,9 @@ export function AppShell({ children }: { children: ReactNode }) {
       {!isApp && (
         <aside className="site-panel anim-fade-up">
           <div className="site-brand">
-            <img
-              src="/icons/logo-nr.png"
-              alt="Nayara Rosa"
-              width={56}
-              height={56}
-              style={{ borderRadius: 14, objectFit: 'cover' }}
-            />
+            <LogoMark size={56} />
             <div>
-              <p className="caption gold-soft">Oficial</p>
+              <p className="caption gold-soft">Oficial · Cantora</p>
               <h1 className="h2">Nayara Rosa</h1>
             </div>
           </div>
@@ -98,15 +99,17 @@ export function AppShell({ children }: { children: ReactNode }) {
               <Smartphone size={16} /> App instalável (PWA) no celular
             </li>
           </ul>
-          {installEvent && (
+          {!standalone && !installedHint && (
             <button type="button" className="btn btn-primary" onClick={handleInstall}>
               <Download size={18} />
               Instalar aplicativo
             </button>
           )}
-          {!installEvent && !installedHint && (
+          {(showInstallHelp || (!installEvent && !installedHint)) && !standalone && (
             <p className="muted site-hint">
               No celular: menu do navegador → &quot;Adicionar à tela inicial&quot; / &quot;Instalar app&quot;.
+              No computador (Chrome/Edge), o botão abre o convite de instalação quando o
+              navegador liberar.
             </p>
           )}
           {installedHint && (
@@ -120,7 +123,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <div className={`phone-frame${isApp ? ' phone-frame--native' : ''}`}>{children}</div>
 
-      {isApp && !standalone && installEvent && (
+      {isApp && !standalone && !installedHint && (
         <button type="button" className="install-fab" onClick={handleInstall}>
           <Download size={16} />
           Instalar app

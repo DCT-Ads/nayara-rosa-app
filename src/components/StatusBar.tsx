@@ -1,5 +1,3 @@
-import { Music2 } from 'lucide-react';
-
 export function StatusBar() {
   return (
     <div className="status-bar">
@@ -16,13 +14,33 @@ export function StatusBar() {
   );
 }
 
-export function LogoMark({ size = 28 }: { size?: number }) {
+const LOGO_SRC = '/icons/logo-nr.png?v=nr4';
+
+/** Logo oficial NR (N + R + chama + cruz) */
+export function LogoMark({
+  size = 56,
+  className = '',
+}: {
+  size?: number;
+  className?: string;
+}) {
   return (
-    <div
-      className="logo-mark"
-      style={{ width: size, height: size, borderRadius: size * 0.3, margin: 0 }}
-    >
-      <Music2 size={size * 0.45} color="#fff" strokeWidth={2.5} />
-    </div>
+    <img
+      src={LOGO_SRC}
+      alt="Nayara Rosa"
+      width={size}
+      height={size}
+      className={`logo-nr-img ${className}`.trim()}
+      decoding="async"
+      style={{
+        width: size,
+        height: size,
+        borderRadius: Math.round(size * 0.28),
+        objectFit: 'cover',
+        display: 'block',
+        boxShadow: 'var(--shadow-play)',
+        background: '#121212',
+      }}
+    />
   );
 }

@@ -36,13 +36,15 @@ export function LoginScreen() {
       <StatusBar />
       <div className="login-body">
         <div className="login-brand">
-          <div className="logo-mark logo-mark--photo">
-            <img src="/icons/logo-nr.png" alt="Nayara Rosa" width={72} height={72} />
-          </div>
-          <h1 className="h1">Nayara Rosa</h1>
-          <p className="caption" style={{ marginTop: 6 }}>
-            Música · Fé · Missão
-          </p>
+          <img
+            className="login-lockup"
+            src="/images/logo-lockup.png?v=nr1"
+            alt="Nayara Rosa — Cantora"
+            width={560}
+            height={200}
+            decoding="async"
+          />
+          <p className="caption login-tagline">Música · Fé · Missão</p>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>

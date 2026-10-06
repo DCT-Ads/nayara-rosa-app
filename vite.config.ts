@@ -71,8 +71,10 @@ export default defineConfig({
           },
         ],
       },
+      injectRegister: null,
       devOptions: {
         enabled: true,
+        type: 'module',
       },
     }),
   ],
