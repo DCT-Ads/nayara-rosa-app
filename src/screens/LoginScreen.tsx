@@ -36,7 +36,7 @@ export function LoginScreen() {
       <StatusBar />
       <div className="login-body">
         <div className="login-brand">
-          <LogoMark size={72} className="login-logo-mark" />
+          <LogoMark size={56} className="login-logo-mark" />
           <h1 className="h1 login-name">Nayara Rosa</h1>
           <p className="caption login-tagline">Música · Fé · Missão</p>
         </div>
