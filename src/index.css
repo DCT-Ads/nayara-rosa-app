@@ -145,6 +145,16 @@ img {
   box-shadow: none;
 }
 
+/* Desktop maximizado / janela larga: mantém o app legível como coluna */
+@media (min-width: 900px) {
+  .phone-frame--native {
+    max-width: 480px;
+    margin-inline: auto;
+    border-left: 1px solid rgba(255, 255, 255, 0.04);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+  }
+}
+
 .site-panel {
   display: flex;
   flex-direction: column;
@@ -1012,9 +1022,11 @@ img {
 
 .timeline-photo {
   position: relative;
-  width: 100%;
+  /* Largura limitada: em tela maximizada evita faixa panorâmica que corta o rosto */
+  width: min(100%, 300px);
   aspect-ratio: 3 / 4;
-  max-height: 360px;
+  height: auto;
+  max-height: none;
   margin-top: 12px;
   border-radius: var(--radius-lg);
   overflow: hidden;
@@ -1067,9 +1079,10 @@ img {
 }
 
 .timeline-video {
-  width: 100%;
+  width: min(100%, 300px);
   aspect-ratio: 3 / 4;
-  max-height: 360px;
+  height: auto;
+  max-height: none;
   object-fit: cover;
   object-position: center;
   background: #000;
@@ -1126,11 +1139,12 @@ img {
 
 .tab {
   flex: 1;
-  padding: 10px;
+  padding: 10px 8px;
   border-radius: var(--radius-pill);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--text-muted);
+  white-space: nowrap;
   text-align: center;
   transition: all 0.25s var(--ease-out);
 }
