@@ -29,7 +29,7 @@ const banners = [
 ];
 
 export function HomeScreen() {
-  const { userName, unreadCount, playTrack, library } = useApp();
+  const { unreadCount, playTrack, library } = useApp();
   const navigate = useNavigate();
   const [bannerIdx, setBannerIdx] = useState(0);
 
