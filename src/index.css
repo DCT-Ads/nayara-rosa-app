@@ -1269,10 +1269,10 @@ img {
   position: absolute;
   inset: 0;
   background-size: cover;
-  /* Centrada, carinha um pouco mais acima no quadro */
-  background-position: center 28%;
+  /* Rostinho bem visível na parte de cima */
+  background-position: center 18%;
   background-repeat: no-repeat;
-  transform: scale(1.06);
+  transform: scale(1.08);
   filter: none;
 }
 

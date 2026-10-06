@@ -57,9 +57,17 @@ export function HomeScreen() {
             <Bell size={20} strokeWidth={1.75} />
             {unreadCount > 0 && <span className="badge-dot" />}
           </button>
-          <div className="avatar" title={userName}>
-            {userName.charAt(0)}
-          </div>
+          <div
+            className="avatar"
+            title="Nayara Rosa"
+            style={{
+              backgroundImage: images.avatar,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center 20%',
+              color: 'transparent',
+            }}
+            aria-label="Nayara Rosa"
+          />
         </div>
       </header>
 

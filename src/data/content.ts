@@ -26,6 +26,8 @@ export const PHOTO_MAP = {
 /** Gradientes fotográficos de placeholder até as fotos oficiais serem adicionadas em /public/images/ */
 export const images = {
   login: "url('/images/login-golden-hour.jpg')",
+  face: "url('/images/nayara-rosto.jpg')",
+  hero: "url('/images/nayara-rosa-hero.jpg')",
   cordasDeAmor: "url('/images/cordas-de-amor-avance.jpg')",
   calendarStage: "url('/images/calendar-israel-stage.jpg')",
   cordasAlt: "url('/images/cordas-de-amor-destaque.jpg')",
@@ -43,8 +45,7 @@ export const images = {
   pointCamera:
     'linear-gradient(200deg, #2A1810 0%, #8B4020 50%, #1A1008 100%)',
   agendaNeon: "url('/images/agenda-aberta.jpg')",
-  avatar:
-    'linear-gradient(135deg, #E91E8C, #F5A623)',
+  avatar: "url('/images/nayara-rosto.jpg')",
 } as const;
 
 export type Track = {
