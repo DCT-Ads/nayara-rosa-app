@@ -164,6 +164,11 @@ function requireAdmin(
   return next();
 }
 
+function paramId(req: express.Request): string {
+  const id = req.params.id;
+  return Array.isArray(id) ? id[0] : String(id || '');
+}
+
 function mapEvent(e: {
   id: string;
   title: string;
@@ -229,7 +234,7 @@ app.get('/api/events', async (_req, res) => {
 
 app.get('/api/events/:id', async (req, res) => {
   try {
-    const event = await prisma.event.findUnique({ where: { id: req.params.id } });
+    const event = await prisma.event.findUnique({ where: { id: paramId(req) } });
     if (!event) return res.status(404).json({ error: 'Evento não encontrado' });
     return res.json(mapEvent(event));
   } catch (err) {
@@ -267,7 +272,7 @@ app.post('/api/events', requireAdmin, async (req, res) => {
 
 app.put('/api/events/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.event.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.event.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Evento não encontrado' });
 
     const { title, type, date, time, location, description, alertEnabled } = req.body;
@@ -276,7 +281,7 @@ app.put('/api/events/:id', requireAdmin, async (req, res) => {
     }
 
     const event = await prisma.event.update({
-      where: { id: req.params.id },
+      where: { id: paramId(req) },
       data: {
         ...(title !== undefined && { title: String(title).trim() }),
         ...(type !== undefined && { type }),
@@ -296,7 +301,7 @@ app.put('/api/events/:id', requireAdmin, async (req, res) => {
 
 app.patch('/api/events/:id/alert', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.event.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.event.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Evento não encontrado' });
 
     const alertEnabled =
@@ -305,7 +310,7 @@ app.patch('/api/events/:id/alert', requireAdmin, async (req, res) => {
         : !existing.alertEnabled;
 
     const event = await prisma.event.update({
-      where: { id: req.params.id },
+      where: { id: paramId(req) },
       data: { alertEnabled },
     });
     return res.json(mapEvent(event));
@@ -317,9 +322,9 @@ app.patch('/api/events/:id/alert', requireAdmin, async (req, res) => {
 
 app.delete('/api/events/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.event.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.event.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Evento não encontrado' });
-    await prisma.event.delete({ where: { id: req.params.id } });
+    await prisma.event.delete({ where: { id: paramId(req) } });
     return res.status(204).send();
   } catch (err) {
     console.error(err);
@@ -369,12 +374,12 @@ app.post('/api/timeline', requireAdmin, async (req, res) => {
 
 app.put('/api/timeline/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.timelineMark.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.timelineMark.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Marco não encontrado' });
 
     const { year, title, caption, sortOrder } = req.body;
     const mark = await prisma.timelineMark.update({
-      where: { id: req.params.id },
+      where: { id: paramId(req) },
       data: {
         ...(year !== undefined && { year: String(year).trim() }),
         ...(title !== undefined && { title: String(title).trim() }),
@@ -395,7 +400,7 @@ app.post(
   upload.single('media'),
   async (req, res) => {
     try {
-      const existing = await prisma.timelineMark.findUnique({ where: { id: req.params.id } });
+      const existing = await prisma.timelineMark.findUnique({ where: { id: paramId(req) } });
       if (!existing) return res.status(404).json({ error: 'Marco não encontrado' });
       if (!req.file) return res.status(400).json({ error: 'Arquivo não enviado' });
 
@@ -408,7 +413,7 @@ app.post(
       }
 
       const mark = await prisma.timelineMark.update({
-        where: { id: req.params.id },
+        where: { id: paramId(req) },
         data: { mediaUrl, mediaType },
       });
       return res.json(mapMark(mark));
@@ -421,11 +426,11 @@ app.post(
 
 app.delete('/api/timeline/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.timelineMark.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.timelineMark.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Marco não encontrado' });
 
     unlinkUpload(existing.mediaUrl);
-    await prisma.timelineMark.delete({ where: { id: req.params.id } });
+    await prisma.timelineMark.delete({ where: { id: paramId(req) } });
     return res.status(204).send();
   } catch (err) {
     console.error(err);
@@ -478,7 +483,7 @@ app.post('/api/media', requireAdmin, async (req, res) => {
 
 app.put('/api/media/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.mediaItem.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.mediaItem.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Mídia não encontrada' });
 
     const { title, artist, type, duration, lyrics, plays, sortOrder } = req.body;
@@ -487,7 +492,7 @@ app.put('/api/media/:id', requireAdmin, async (req, res) => {
     }
 
     const item = await prisma.mediaItem.update({
-      where: { id: req.params.id },
+      where: { id: paramId(req) },
       data: {
         ...(title !== undefined && { title: String(title).trim() }),
         ...(artist !== undefined && { artist: String(artist).trim() }),
@@ -511,7 +516,7 @@ app.post(
   uploadMedia.single('file'),
   async (req, res) => {
     try {
-      const existing = await prisma.mediaItem.findUnique({ where: { id: req.params.id } });
+      const existing = await prisma.mediaItem.findUnique({ where: { id: paramId(req) } });
       if (!existing) return res.status(404).json({ error: 'Mídia não encontrada' });
       if (!req.file) return res.status(400).json({ error: 'Arquivo não enviado' });
 
@@ -523,7 +528,7 @@ app.post(
       else if (req.file.mimetype.startsWith('audio/') && type === 'video') type = 'musica';
 
       const item = await prisma.mediaItem.update({
-        where: { id: req.params.id },
+        where: { id: paramId(req) },
         data: { mediaUrl, type },
       });
       return res.json(mapMedia(item));
@@ -540,7 +545,7 @@ app.post(
   uploadMedia.single('cover'),
   async (req, res) => {
     try {
-      const existing = await prisma.mediaItem.findUnique({ where: { id: req.params.id } });
+      const existing = await prisma.mediaItem.findUnique({ where: { id: paramId(req) } });
       if (!existing) return res.status(404).json({ error: 'Mídia não encontrada' });
       if (!req.file) return res.status(400).json({ error: 'Capa não enviada' });
       if (!req.file.mimetype.startsWith('image/')) {
@@ -551,7 +556,7 @@ app.post(
       if (existing.coverUrl.startsWith('/uploads/')) unlinkUpload(existing.coverUrl);
 
       const item = await prisma.mediaItem.update({
-        where: { id: req.params.id },
+        where: { id: paramId(req) },
         data: { coverUrl },
       });
       return res.json(mapMedia(item));
@@ -564,11 +569,11 @@ app.post(
 
 app.delete('/api/media/:id', requireAdmin, async (req, res) => {
   try {
-    const existing = await prisma.mediaItem.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.mediaItem.findUnique({ where: { id: paramId(req) } });
     if (!existing) return res.status(404).json({ error: 'Mídia não encontrada' });
     unlinkUpload(existing.mediaUrl);
     if (existing.coverUrl.startsWith('/uploads/')) unlinkUpload(existing.coverUrl);
-    await prisma.mediaItem.delete({ where: { id: req.params.id } });
+    await prisma.mediaItem.delete({ where: { id: paramId(req) } });
     return res.status(204).send();
   } catch (err) {
     console.error(err);

@@ -1,7 +1,12 @@
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { PrismaClient } from '@prisma/client';
 
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const dbPath = path.join(root, 'prisma', 'seed.db').replace(/\\/g, '/');
+
 const prisma = new PrismaClient({
-  datasources: { db: { url: 'file:./prisma/seed.db' } },
+  datasources: { db: { url: `file:${dbPath}` } },
 });
 
 const items = await prisma.mediaItem.findMany();

@@ -42,3 +42,5 @@ public/uploads/media/_*.mp4
 dev-dist/
 .vercel
 upload-result.json
+
+.vercel
