@@ -100,8 +100,8 @@ export function LoginScreen() {
             </button>
           </div>
 
-          <p className="muted" style={{ textAlign: 'center', marginTop: 8 }}>
-            Admin: admin@NayaraRosa
+          <p className="muted login-admin-hint">
+            Admin: admin@nayararosa
           </p>
         </form>
       </div>

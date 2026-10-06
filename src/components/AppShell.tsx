@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Download, MonitorSmartphone, Smartphone } from 'lucide-react';
+import { Download, MonitorSmartphone, Smartphone, X } from 'lucide-react';
 import { LogoMark } from './StatusBar';
-
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-};
+import {
+  subscribeInstallPrompt,
+  type BeforeInstallPromptEvent,
+} from '../pwaInstall';
 
 function useAppMode() {
   const [standalone, setStandalone] = useState(false);
@@ -16,7 +15,9 @@ function useAppMode() {
   useEffect(() => {
     const mqStand = window.matchMedia('(display-mode: standalone)');
     const mqNarrow = window.matchMedia('(max-width: 768px)');
-    const iosStandalone = 'standalone' in navigator && Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
+    const iosStandalone =
+      'standalone' in navigator &&
+      Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
 
     const sync = () => {
       setStandalone(mqStand.matches || iosStandalone);
@@ -39,25 +40,22 @@ export function AppShell({ children }: { children: ReactNode }) {
   const { standalone, isApp } = useAppMode();
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [installedHint, setInstalledHint] = useState(false);
-  const [showInstallHelp, setShowInstallHelp] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   useEffect(() => {
-    const onBip = (e: Event) => {
-      e.preventDefault();
-      setInstallEvent(e as BeforeInstallPromptEvent);
-      setShowInstallHelp(false);
-    };
+    return subscribeInstallPrompt((e) => {
+      setInstallEvent(e);
+    });
+  }, []);
+
+  useEffect(() => {
     const onInstalled = () => {
       setInstallEvent(null);
       setInstalledHint(true);
-      setShowInstallHelp(false);
+      setHelpOpen(false);
     };
-    window.addEventListener('beforeinstallprompt', onBip);
     window.addEventListener('appinstalled', onInstalled);
-    return () => {
-      window.removeEventListener('beforeinstallprompt', onBip);
-      window.removeEventListener('appinstalled', onInstalled);
-    };
+    return () => window.removeEventListener('appinstalled', onInstalled);
   }, []);
 
   const modeLabel = useMemo(() => {
@@ -68,12 +66,19 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   async function handleInstall() {
     if (installEvent) {
-      await installEvent.prompt();
-      const choice = await installEvent.userChoice;
-      if (choice.outcome === 'accepted') setInstallEvent(null);
+      try {
+        await installEvent.prompt();
+        const choice = await installEvent.userChoice;
+        if (choice.outcome === 'accepted') {
+          setInstallEvent(null);
+          setInstalledHint(true);
+        }
+      } catch {
+        setHelpOpen(true);
+      }
       return;
     }
-    setShowInstallHelp(true);
+    setHelpOpen(true);
   }
 
   return (
@@ -100,17 +105,14 @@ export function AppShell({ children }: { children: ReactNode }) {
             </li>
           </ul>
           {!standalone && !installedHint && (
-            <button type="button" className="btn btn-primary" onClick={handleInstall}>
+            <button
+              type="button"
+              className="btn btn-primary site-install-btn"
+              onClick={handleInstall}
+            >
               <Download size={18} />
               Instalar aplicativo
             </button>
-          )}
-          {(showInstallHelp || (!installEvent && !installedHint)) && !standalone && (
-            <p className="muted site-hint">
-              No celular: menu do navegador → &quot;Adicionar à tela inicial&quot; / &quot;Instalar app&quot;.
-              No computador (Chrome/Edge), o botão abre o convite de instalação quando o
-              navegador liberar.
-            </p>
           )}
           {installedHint && (
             <p className="caption gold-soft">App instalado com sucesso.</p>
@@ -128,6 +130,47 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Download size={16} />
           Instalar app
         </button>
+      )}
+
+      {helpOpen && (
+        <div className="install-modal-backdrop" role="presentation" onClick={() => setHelpOpen(false)}>
+          <div
+            className="install-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="install-help-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="btn-icon install-modal-close"
+              aria-label="Fechar"
+              onClick={() => setHelpOpen(false)}
+            >
+              <X size={18} />
+            </button>
+            <h2 id="install-help-title" className="h3">
+              Instalar o app
+            </h2>
+            <p className="caption" style={{ marginTop: 10, lineHeight: 1.5 }}>
+              No celular (Chrome/Safari): abra o menu do navegador →{' '}
+              <strong>&quot;Adicionar à tela inicial&quot;</strong> ou{' '}
+              <strong>&quot;Instalar app&quot;</strong>.
+            </p>
+            <p className="caption" style={{ marginTop: 10, lineHeight: 1.5 }}>
+              No computador (Chrome/Edge): use o ícone de instalação na barra de
+              endereço, ou o menu ⋮ → Instalar Nayara Rosa.
+            </p>
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: 18 }}
+              onClick={() => setHelpOpen(false)}
+            >
+              Entendi
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
