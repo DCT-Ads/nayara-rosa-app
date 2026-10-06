@@ -47,7 +47,7 @@ function timelinePhotoClass(mark: TimelineMark): string {
 
 export function AltarScreen() {
   const { isAdmin, adminEmail } = useApp();
-  const [tab, setTab] = useState<'oracao' | 'missoes'>('oracao');
+  const [tab, setTab] = useState<'oracao' | 'missoes' | 'trajetoria'>('oracao');
   const [prayers, setPrayers] = useState(seedPrayers);
   const [text, setText] = useState('');
   const [prayed, setPrayed] = useState<Record<string, boolean>>({});
@@ -75,8 +75,8 @@ export function AltarScreen() {
   }, []);
 
   useEffect(() => {
-    if (tab === 'missoes') void loadTimeline();
-  }, [tab, loadTimeline]);
+    void loadTimeline();
+  }, [loadTimeline]);
 
   function submitPrayer(e: FormEvent) {
     e.preventDefault();
@@ -186,9 +186,15 @@ export function AltarScreen() {
         >
           Missões
         </button>
+        <button
+          className={`tab${tab === 'trajetoria' ? ' active' : ''}`}
+          onClick={() => setTab('trajetoria')}
+        >
+          Trajetória
+        </button>
       </div>
 
-      {tab === 'oracao' ? (
+      {tab === 'oracao' && (
         <>
           <div
             className="section anim-fade-up"
@@ -271,70 +277,74 @@ export function AltarScreen() {
             </div>
           </section>
         </>
-      ) : (
+      )}
+
+      {tab === 'missoes' && (
+        <section className="section anim-fade-up" style={{ position: 'relative', zIndex: 1 }}>
+          <div className="section-header">
+            <h3 className="h3">Desafios espirituais</h3>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {missions.map((m) => {
+              const prog = missionProgress[m.id] ?? 0;
+              const pct = Math.round((prog / m.days) * 100);
+              return (
+                <div key={m.id} className="card" style={{ padding: 16 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div>
+                      <h4 style={{ fontWeight: 600 }}>{m.title}</h4>
+                      <p className="caption" style={{ marginTop: 4 }}>
+                        {m.description}
+                      </p>
+                    </div>
+                    <span
+                      className="chip"
+                      style={{
+                        padding: '4px 10px',
+                        fontSize: '0.65rem',
+                        background: 'var(--accent-gradient-soft)',
+                        color: 'var(--accent-gold)',
+                        borderColor: 'rgba(212,165,116,0.25)',
+                      }}
+                    >
+                      {m.seal}
+                    </span>
+                  </div>
+                  <div style={{ marginTop: 14 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <span className="muted">
+                        Dia {prog} de {m.days}
+                      </span>
+                      <span className="muted">{pct}%</span>
+                    </div>
+                    <div className="progress-track">
+                      <div className="progress-fill" style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                  {prog < m.days && (
+                    <button
+                      className="btn btn-ghost"
+                      style={{ width: '100%', marginTop: 12, minHeight: 40, fontSize: '0.8125rem' }}
+                      onClick={() =>
+                        setMissionProgress((prev) => ({
+                          ...prev,
+                          [m.id]: Math.min(m.days, (prev[m.id] ?? 0) + 1),
+                        }))
+                      }
+                    >
+                      Registrar progresso
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {tab === 'trajetoria' && (
         <>
           <section className="section anim-fade-up" style={{ position: 'relative', zIndex: 1 }}>
-            <div className="section-header">
-              <h3 className="h3">Desafios espirituais</h3>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {missions.map((m) => {
-                const prog = missionProgress[m.id] ?? 0;
-                const pct = Math.round((prog / m.days) * 100);
-                return (
-                  <div key={m.id} className="card" style={{ padding: 16 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div>
-                        <h4 style={{ fontWeight: 600 }}>{m.title}</h4>
-                        <p className="caption" style={{ marginTop: 4 }}>
-                          {m.description}
-                        </p>
-                      </div>
-                      <span
-                        className="chip"
-                        style={{
-                          padding: '4px 10px',
-                          fontSize: '0.65rem',
-                          background: 'var(--accent-gradient-soft)',
-                          color: 'var(--accent-gold)',
-                          borderColor: 'rgba(212,165,116,0.25)',
-                        }}
-                      >
-                        {m.seal}
-                      </span>
-                    </div>
-                    <div style={{ marginTop: 14 }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                        <span className="muted">
-                          Dia {prog} de {m.days}
-                        </span>
-                        <span className="muted">{pct}%</span>
-                      </div>
-                      <div className="progress-track">
-                        <div className="progress-fill" style={{ width: `${pct}%` }} />
-                      </div>
-                    </div>
-                    {prog < m.days && (
-                      <button
-                        className="btn btn-ghost"
-                        style={{ width: '100%', marginTop: 12, minHeight: 40, fontSize: '0.8125rem' }}
-                        onClick={() =>
-                          setMissionProgress((prev) => ({
-                            ...prev,
-                            [m.id]: Math.min(m.days, (prev[m.id] ?? 0) + 1),
-                          }))
-                        }
-                      >
-                        Registrar progresso
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-
-          <section className="section" style={{ position: 'relative', zIndex: 1 }}>
             <div className="section-header">
               <h3 className="h3">Trajetória</h3>
               {isAdmin && (
