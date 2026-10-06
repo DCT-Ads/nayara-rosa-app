@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id           String   @id @default(cuid())
+  title        String
+  type         String // show | live | lancamento
+  date         String // YYYY-MM-DD
+  time         String // HH:mm
+  location     String
+  description  String  @default("")
+  alertEnabled Boolean @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model TimelineMark {
+  id          String   @id @default(cuid())
+  year        String
+  title       String
+  caption     String
+  mediaUrl    String   @default("")
+  mediaType   String   @default("none") // none | image | video
+  placeholder String   @default("")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model MediaItem {
+  id          String   @id @default(cuid())
+  title       String
+  artist      String   @default("Nayara Rosa")
+  type        String // musica | video | album
+  duration    String   @default("0:00")
+  coverUrl    String   @default("")
+  mediaUrl    String   @default("")
+  placeholder String   @default("")
+  plays       String   @default("0")
+  lyrics      String   @default("")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

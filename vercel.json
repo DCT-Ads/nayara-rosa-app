@@ -1,0 +1,12 @@
+{
+  "framework": null,
+  "buildCommand": "prisma generate && npm run build",
+  "installCommand": "npm install",
+  "rewrites": [{ "source": "/(.*)", "destination": "/api" }],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 60,
+      "includeFiles": "{dist/**,public/**,prisma/**,node_modules/.prisma/**,node_modules/@prisma/client/**}"
+    }
+  }
+}
