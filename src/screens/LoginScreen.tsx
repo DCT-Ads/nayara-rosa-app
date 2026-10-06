@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 import { images } from '../data/content';
-import { StatusBar } from '../components/StatusBar';
+import { LogoMark, StatusBar } from '../components/StatusBar';
 
 export function LoginScreen() {
   const { login, isAuthenticated } = useApp();
@@ -36,14 +36,8 @@ export function LoginScreen() {
       <StatusBar />
       <div className="login-body">
         <div className="login-brand">
-          <img
-            className="login-lockup"
-            src="/images/logo-lockup.png?v=nr1"
-            alt="Nayara Rosa — Cantora"
-            width={560}
-            height={200}
-            decoding="async"
-          />
+          <LogoMark size={72} className="login-logo-mark" />
+          <h1 className="h1 login-name">Nayara Rosa</h1>
           <p className="caption login-tagline">Música · Fé · Missão</p>
         </div>
 

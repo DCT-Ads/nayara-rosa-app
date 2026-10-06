@@ -1269,10 +1269,10 @@ img {
   position: absolute;
   inset: 0;
   background-size: cover;
-  /* Rostinho bem visível na parte de cima */
-  background-position: center 18%;
+  /* Rostinho em destaque no topo */
+  background-position: center 22%;
   background-repeat: no-repeat;
-  transform: scale(1.08);
+  transform: scale(1.04);
   filter: none;
 }
 
@@ -1280,13 +1280,14 @@ img {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 50% 15%, transparent 10%, rgba(10, 8, 12, 0.35) 55%),
+    radial-gradient(ellipse at 50% 28%, transparent 0%, transparent 32%, rgba(8, 6, 10, 0.25) 58%),
     linear-gradient(
       180deg,
-      rgba(18, 18, 18, 0.28) 0%,
-      rgba(18, 18, 18, 0.45) 32%,
-      rgba(18, 18, 18, 0.82) 58%,
-      rgba(18, 18, 18, 0.96) 78%
+      rgba(18, 18, 18, 0.12) 0%,
+      rgba(18, 18, 18, 0.18) 28%,
+      rgba(18, 18, 18, 0.55) 48%,
+      rgba(18, 18, 18, 0.88) 68%,
+      rgba(18, 18, 18, 0.96) 100%
     );
 }
 
@@ -1306,23 +1307,22 @@ img {
   animation: fadeUp 0.7s var(--ease-out) both;
 }
 
-.login-lockup {
-  display: block;
-  width: min(300px, 82%);
-  max-width: 320px;
-  height: auto;
-  margin: 0 auto;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 32px rgba(233, 30, 140, 0.4));
-  animation: pulseGlow 3.2s ease infinite;
+.login-logo-mark {
+  margin: 0 auto 12px !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45) !important;
+}
+
+.login-name {
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65);
 }
 
 .login-tagline {
-  margin-top: 12px;
+  margin-top: 8px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   font-size: 0.72rem;
   color: var(--accent-gold);
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.55);
 }
 
 .login-brand .logo-mark {
