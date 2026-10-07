@@ -35,8 +35,10 @@ async function ensureDatabase() {
   if (!isVercel) return;
   const dbPath = '/tmp/nayara-rosa.db';
   const seedDb = path.join(rootDir, 'prisma', 'seed.db');
-  if (!fs.existsSync(dbPath) && fs.existsSync(seedDb)) {
+  // Sempre restaura o seed (URLs permanentes dos vídeos/áudios). Uploads só em /tmp somem no redeploy.
+  if (fs.existsSync(seedDb)) {
     fs.copyFileSync(seedDb, dbPath);
+    return;
   }
   if (!fs.existsSync(dbPath)) {
     execSync('npx prisma db push --skip-generate', {
