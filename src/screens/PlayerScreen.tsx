@@ -229,9 +229,13 @@ export function PlayerScreen() {
         </div>
       </header>
 
-      {isAdmin && (
+      {isAdmin ? (
         <p className="caption gold-soft" style={{ padding: '0 20px 10px' }}>
           Modo admin — toque no lápis para editar ou no + para subir música/vídeo
+        </p>
+      ) : (
+        <p className="caption" style={{ padding: '0 20px 10px' }}>
+          Toque em <strong>Vídeos</strong> para ver os clipes · escolha um item e dê play
         </p>
       )}
 
@@ -243,6 +247,9 @@ export function PlayerScreen() {
             onClick={() => setFilter(f)}
           >
             {f}
+            {f === 'Vídeos'
+              ? ` (${library.filter((t) => t.type === 'video').length})`
+              : ''}
           </button>
         ))}
       </div>
