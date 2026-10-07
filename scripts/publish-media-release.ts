@@ -28,7 +28,17 @@ function gh(args: string[]) {
 
 function toReleaseUrl(localUrl: string): string {
   if (!localUrl) return localUrl;
-  if (localUrl.startsWith('http://') || localUrl.startsWith('https://')) return localUrl;
+  if (localUrl.startsWith('http://') || localUrl.startsWith('https://')) {
+    // Não mexer em capas oficiais do site (/images/)
+    if (localUrl.includes('/images/')) return localUrl;
+    // Já é release URL
+    if (localUrl.includes('/releases/download/')) return localUrl;
+    return localUrl;
+  }
+  // Capas estáticas do deploy — mantém caminho do site
+  if (localUrl.startsWith('/images/')) return localUrl;
+  // Só arquivos enviados em /uploads/ vão para o Release
+  if (!localUrl.startsWith('/uploads/')) return localUrl;
   const name = localUrl.split('/').pop();
   if (!name) return localUrl;
   return `${baseUrl}/${name}`;
