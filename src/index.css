@@ -1308,8 +1308,8 @@ img {
   position: absolute;
   inset: 0;
   background-size: cover;
-  /* Rostinho livre no meio da tela */
-  background-position: center 38%;
+  /* Rosto dela no palco, acima do formulário */
+  background-position: center 24%;
   background-repeat: no-repeat;
   transform: scale(1.04);
   filter: none;

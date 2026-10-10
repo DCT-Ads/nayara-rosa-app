@@ -25,7 +25,7 @@ export const PHOTO_MAP = {
 
 /** Gradientes fotográficos de placeholder até as fotos oficiais serem adicionadas em /public/images/ */
 export const images = {
-  login: "url('/images/login-face.jpg?v=face2')",
+  login: "url('/images/login-stage.jpg?v=stage1')",
   face: "url('/images/nayara-rosto.jpg')",
   hero: "url('/images/nayara-rosa-hero.jpg')",
   cordasDeAmor: "url('/images/cordas-de-amor-avance.jpg')",
