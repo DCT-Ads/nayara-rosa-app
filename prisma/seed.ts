@@ -53,7 +53,7 @@ const seedTimeline = [
     sortOrder: 10,
   },
   {
-    year: '2010',
+    year: '2014',
     title: 'Vitória no Eleva Paraná',
     caption:
       'Nayara Rosa vence o Eleva Paraná, um marco importante que impulsiona sua trajetória na música.',
