@@ -145,15 +145,7 @@ img {
   box-shadow: none;
 }
 
-/* Desktop maximizado / janela larga: mantém o app legível como coluna */
-@media (min-width: 900px) {
-  .phone-frame--native {
-    max-width: 480px;
-    margin-inline: auto;
-    border-left: 1px solid rgba(255, 255, 255, 0.04);
-    border-right: 1px solid rgba(255, 255, 255, 0.04);
-  }
-}
+/* Abaixo de 1024px o app ocupa a tela inteira (layout mobile). */
 
 .site-panel {
   position: relative;
@@ -614,6 +606,12 @@ img {
 .carousel > * {
   scroll-snap-align: start;
   flex-shrink: 0;
+}
+
+.home-hot {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 /* Animations */
@@ -1642,4 +1640,176 @@ img {
   background: var(--accent-gradient);
   border: none;
   box-shadow: var(--shadow-play);
+}
+
+/* Desktop ≥1024px — site largo. Mobile permanece no layout de app. */
+.desktop-nav {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .app-shell--desktop {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    height: 100%;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    place-items: stretch;
+  }
+
+  .app-shell--desktop .phone-frame {
+    flex: 1 1 auto;
+    width: 100%;
+    height: 0;
+    min-height: 0;
+    max-width: none;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .desktop-nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    height: 72px;
+    padding: 0 max(28px, calc((100% - 1320px) / 2));
+    background: rgba(12, 12, 12, 0.92);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(16px);
+    flex-shrink: 0;
+    z-index: 30;
+  }
+
+  .desktop-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: inherit;
+    min-width: 220px;
+  }
+
+  .desktop-brand strong {
+    display: block;
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+
+  .desktop-brand em {
+    display: block;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+  }
+
+  .desktop-links {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .desktop-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: var(--radius-pill);
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  .desktop-link.active {
+    color: #fff;
+    background: rgba(233, 30, 140, 0.18);
+  }
+
+  .desktop-install {
+    min-height: 40px;
+    padding: 0 16px;
+    font-size: 0.85rem;
+  }
+
+  .app-shell--desktop .status-bar,
+  .app-shell--desktop .bottom-nav {
+    display: none;
+  }
+
+  .app-shell--desktop .screen-scroll {
+    padding-inline: max(28px, calc((100% - 1320px) / 2));
+    padding-bottom: calc(var(--mini-h) + 40px);
+  }
+
+  .app-shell--desktop .screen-scroll.no-mini {
+    padding-bottom: 32px;
+  }
+
+  .app-shell--desktop .page-header,
+  .app-shell--desktop .search-bar,
+  .app-shell--desktop .banner-wrap,
+  .app-shell--desktop .section,
+  .app-shell--desktop .carousel {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .app-shell--desktop .search-bar {
+    width: 100%;
+  }
+
+  .app-shell--desktop .banner {
+    height: clamp(280px, 36vh, 420px);
+  }
+
+  .app-shell--desktop .carousel {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    gap: 16px;
+    scroll-snap-type: none;
+  }
+
+  .app-shell--desktop .carousel > * {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+
+  .app-shell--desktop .carousel .card-media {
+    width: 100% !important;
+    height: 240px !important;
+  }
+
+  .app-shell--desktop .home-hot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  .app-shell--desktop .mini-player {
+    left: 0;
+    right: 0;
+    width: min(880px, calc(100% - 48px));
+    margin-inline: auto;
+    bottom: 18px;
+  }
+
+  .app-shell--desktop .login-body {
+    width: min(440px, 100%);
+    margin-inline: auto;
+  }
+}
+
+@media (min-width: 1366px) {
+  .app-shell--desktop .carousel {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }

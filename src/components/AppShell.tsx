@@ -1,43 +1,50 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Download, MonitorSmartphone, Smartphone, X } from 'lucide-react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { NavLink } from 'react-router-dom';
+import { CalendarDays, Download, HandHeart, Home, Music, X } from 'lucide-react';
 import { LogoMark } from './StatusBar';
 import {
   subscribeInstallPrompt,
   type BeforeInstallPromptEvent,
 } from '../pwaInstall';
 
+const desktopNav = [
+  { to: '/home', label: 'Home', icon: Home },
+  { to: '/agenda', label: 'Agenda', icon: CalendarDays },
+  { to: '/altar', label: 'Altar', icon: HandHeart },
+  { to: '/player', label: 'Player', icon: Music },
+] as const;
+
 function useAppMode() {
   const [standalone, setStandalone] = useState(false);
-  const [narrow, setNarrow] = useState(
-    typeof window !== 'undefined' ? window.matchMedia('(max-width: 768px)').matches : true,
+  const [desktop, setDesktop] = useState(
+    typeof window !== 'undefined' ? window.matchMedia('(min-width: 1024px)').matches : false,
   );
 
   useEffect(() => {
     const mqStand = window.matchMedia('(display-mode: standalone)');
-    const mqNarrow = window.matchMedia('(max-width: 768px)');
+    const mqDesktop = window.matchMedia('(min-width: 1024px)');
     const iosStandalone =
       'standalone' in navigator &&
       Boolean((navigator as Navigator & { standalone?: boolean }).standalone);
 
     const sync = () => {
       setStandalone(mqStand.matches || iosStandalone);
-      setNarrow(mqNarrow.matches);
+      setDesktop(mqDesktop.matches);
     };
     sync();
     mqStand.addEventListener('change', sync);
-    mqNarrow.addEventListener('change', sync);
+    mqDesktop.addEventListener('change', sync);
     return () => {
       mqStand.removeEventListener('change', sync);
-      mqNarrow.removeEventListener('change', sync);
+      mqDesktop.removeEventListener('change', sync);
     };
   }, []);
 
-  const isApp = standalone || narrow;
-  return { standalone, narrow, isApp };
+  return { standalone, desktop };
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { standalone, isApp } = useAppMode();
+  const { standalone, desktop } = useAppMode();
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null);
   const [installedHint, setInstalledHint] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
@@ -58,12 +65,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     return () => window.removeEventListener('appinstalled', onInstalled);
   }, []);
 
-  const modeLabel = useMemo(() => {
-    if (standalone) return 'Modo app instalado';
-    if (isApp) return 'Site mobile / app';
-    return 'Site desktop';
-  }, [standalone, isApp]);
-
   async function handleInstall() {
     if (installEvent) {
       try {
@@ -82,50 +83,40 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className={`app-shell${isApp ? ' app-shell--native' : ' app-shell--site'}`}>
-      {!isApp && (
-        <aside className="site-panel anim-fade-up">
-          <div className="site-brand">
-            <LogoMark size={56} />
-            <div>
-              <p className="caption gold-soft">Oficial · Cantora</p>
-              <h1 className="h2">Nayara Rosa</h1>
-            </div>
-          </div>
-          <p className="caption site-copy">
-            Site e aplicativo no mesmo lugar: use no navegador ou instale no celular
-            como app (ícone na tela inicial).
-          </p>
-          <ul className="site-points">
-            <li>
-              <MonitorSmartphone size={16} /> Site completo no desktop
-            </li>
-            <li>
-              <Smartphone size={16} /> App instalável (PWA) no celular
-            </li>
-          </ul>
+    <div className={`app-shell${desktop ? ' app-shell--desktop' : ' app-shell--native'}`}>
+      {desktop && (
+        <header className="desktop-nav">
+          <NavLink to="/home" className="desktop-brand">
+            <LogoMark size={40} />
+            <span>
+              <strong>Nayara Rosa</strong>
+              <em>Música · Fé · Missão</em>
+            </span>
+          </NavLink>
+          <nav className="desktop-links" aria-label="Navegação principal">
+            {desktopNav.map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                className={({ isActive }) => `desktop-link${isActive ? ' active' : ''}`}
+              >
+                <Icon size={18} strokeWidth={1.75} />
+                {label}
+              </NavLink>
+            ))}
+          </nav>
           {!standalone && !installedHint && (
-            <button
-              type="button"
-              className="btn btn-primary site-install-btn"
-              onClick={handleInstall}
-            >
-              <Download size={18} />
-              Instalar aplicativo
+            <button type="button" className="btn btn-primary desktop-install" onClick={handleInstall}>
+              <Download size={16} />
+              Instalar
             </button>
           )}
-          {installedHint && (
-            <p className="caption gold-soft">App instalado com sucesso.</p>
-          )}
-          <p className="muted" style={{ marginTop: 12 }}>
-            {modeLabel}
-          </p>
-        </aside>
+        </header>
       )}
 
-      <div className={`phone-frame${isApp ? ' phone-frame--native' : ''}`}>{children}</div>
+      <div className={`phone-frame${desktop ? '' : ' phone-frame--native'}`}>{children}</div>
 
-      {isApp && !standalone && !installedHint && (
+      {!desktop && !standalone && !installedHint && (
         <button type="button" className="install-fab" onClick={handleInstall}>
           <Download size={16} />
           Instalar app

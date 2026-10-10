@@ -156,7 +156,7 @@ export function HomeScreen() {
           </button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div className="home-hot">
           {hot.map((track, i) => (
             <button
               key={track.id}
