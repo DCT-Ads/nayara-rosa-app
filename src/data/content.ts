@@ -45,6 +45,7 @@ export const images = {
   pointCamera:
     'linear-gradient(200deg, #2A1810 0%, #8B4020 50%, #1A1008 100%)',
   agendaNeon: "url('/images/agenda-aberta.jpg')",
+  curadoParaCurar: "url('/images/curado-para-curar.png')",
   avatar: "url('/images/nayara-rosto.jpg')",
 } as const;
 

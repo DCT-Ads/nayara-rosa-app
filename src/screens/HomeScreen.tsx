@@ -6,10 +6,18 @@ import { images } from '../data/content';
 
 const banners = [
   {
-    title: 'Cordas de Amor',
-    subtitle: 'Novo single · Avance Music',
-    bg: images.cordasDeAmor,
+    title: 'Curado Para Curar',
+    subtitle: 'Novo clipe · Avance Music',
+    bg: images.curadoParaCurar,
     tag: 'Lançamento',
+    overlay: 'bottom' as const,
+    position: 'center 16%',
+  },
+  {
+    title: 'Cordas de Amor',
+    subtitle: 'Single · Avance Music',
+    bg: images.cordasDeAmor,
+    tag: 'Single',
     overlay: 'bottom' as const,
   },
   {
@@ -81,7 +89,12 @@ export function HomeScreen() {
           className="banner"
           style={{
             backgroundImage: banner.bg,
-            backgroundPosition: banner.overlay === 'top' ? 'center 62%' : 'center',
+            backgroundPosition:
+              'position' in banner && banner.position
+                ? banner.position
+                : banner.overlay === 'top'
+                  ? 'center 62%'
+                  : 'center',
           }}
         >
           <div
