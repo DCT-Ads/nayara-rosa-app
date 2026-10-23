@@ -378,15 +378,36 @@ img {
   background-position: center;
 }
 
+.card-media-bg--fit {
+  background-position: center 30%;
+  filter: blur(12px) brightness(0.7);
+  transform: scale(1.08);
+}
+
+.card-media-figure {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: center top;
+  pointer-events: none;
+}
+
 .card-media-overlay {
   position: absolute;
   inset: 0;
+  z-index: 1;
   background: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.88) 100%);
 }
 
 .card-media-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -1217,6 +1238,50 @@ img {
   background-position: center;
 }
 
+/* Foto em pé: palco embaçado nas laterais e o corpo inteiro no centro */
+.banner--fit {
+  height: 340px;
+}
+
+.banner--fit::before {
+  content: '';
+  position: absolute;
+  inset: -28px;
+  background: inherit;
+  filter: blur(18px) brightness(0.62);
+  transform: scale(1.06);
+}
+
+.banner-figure {
+  position: absolute;
+  z-index: 0;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  width: auto;
+  transform: translateX(-50%);
+  object-fit: contain;
+  object-position: center top;
+  pointer-events: none;
+}
+
+.banner--fit .banner-overlay {
+  z-index: 1;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 6, 14, 0.12) 0%,
+      rgba(8, 6, 14, 0.04) 42%,
+      rgba(8, 6, 14, 0.45) 100%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(8, 6, 14, 0.78) 0%,
+      rgba(8, 6, 14, 0.35) 24%,
+      transparent 46%
+    );
+}
+
 .banner-overlay {
   position: absolute;
   inset: 0;
@@ -1258,7 +1323,7 @@ img {
 
 .banner-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -1768,6 +1833,10 @@ img {
 
   .app-shell--desktop .banner {
     height: clamp(280px, 36vh, 420px);
+  }
+
+  .app-shell--desktop .banner--fit {
+    height: clamp(460px, 62vh, 580px);
   }
 
   .app-shell--desktop .carousel {

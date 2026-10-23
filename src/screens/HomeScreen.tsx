@@ -11,7 +11,7 @@ const banners = [
     bg: images.curadoParaCurar,
     tag: 'Lançamento',
     overlay: 'bottom' as const,
-    position: 'center 16%',
+    fit: true,
   },
   {
     title: 'Cordas de Amor',
@@ -86,17 +86,19 @@ export function HomeScreen() {
 
       <div className="banner-wrap anim-fade-up" style={{ animationDelay: '0.1s' }}>
         <div
-          className="banner"
+          className={`banner${'fit' in banner && banner.fit ? ' banner--fit' : ''}`}
           style={{
             backgroundImage: banner.bg,
-            backgroundPosition:
-              'position' in banner && banner.position
-                ? banner.position
-                : banner.overlay === 'top'
-                  ? 'center 62%'
-                  : 'center',
+            backgroundPosition: banner.overlay === 'top' ? 'center 62%' : 'center',
           }}
         >
+          {'fit' in banner && banner.fit && (
+            <img
+              className="banner-figure"
+              src="/images/curado-para-curar.png"
+              alt=""
+            />
+          )}
           <div
             className={`banner-overlay${banner.overlay === 'top' ? ' banner-overlay--top' : ''}`}
           />
@@ -149,7 +151,13 @@ export function HomeScreen() {
             }}
             onClick={() => playTrack(track)}
           >
-            <div className="card-media-bg" style={{ backgroundImage: track.cover }} />
+            <div
+              className={`card-media-bg${track.cover.includes('curado-para-curar') ? ' card-media-bg--fit' : ''}`}
+              style={{ backgroundImage: track.cover }}
+            />
+            {track.cover.includes('curado-para-curar') && (
+              <img className="card-media-figure" src="/images/curado-para-curar.png" alt="" />
+            )}
             <div className="card-media-overlay" />
             <div className="card-media-content">
               <span className="h3" style={{ fontSize: '0.9rem' }}>
